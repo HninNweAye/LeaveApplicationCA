@@ -3,11 +3,15 @@ package com.leave.project.MODELS;
 import java.sql.Date;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 
 import com.leave.project.UTILITIES.Status;
@@ -31,7 +35,8 @@ public class LeaveHistoryDetails {
 	private String applyingReason;
 	private String rejectionReason;
 	@NotNull
-	private Status status=Status.APPLIED;
+	@Enumerated(EnumType.STRING)
+	private Status leaveStatus;
 	private String workDesemination;
 	public int getLeaveHistoryId() {
 		return leaveHistoryId;
@@ -75,11 +80,11 @@ public class LeaveHistoryDetails {
 	public void setRejectionReason(String rejectionReason) {
 		this.rejectionReason = rejectionReason;
 	}
-	public Status getStatus() {
-		return status;
+	public Status getLeaveStatus() {
+		return leaveStatus;
 	}
-	public void setStatus(Status status) {
-		this.status = status;
+	public void setLeaveStatus(Status status) {
+		this.leaveStatus = status;
 	}
 	public String getWorkDesemination() {
 		return workDesemination;
@@ -98,7 +103,7 @@ public class LeaveHistoryDetails {
 		this.endDate = endDate;
 		this.applyingReason = applyingReason;
 		this.rejectionReason = rejectionReason;
-		this.status = status;
+		this.leaveStatus = status;
 		this.workDesemination = workDesemination;
 	}
 	public LeaveHistoryDetails() {

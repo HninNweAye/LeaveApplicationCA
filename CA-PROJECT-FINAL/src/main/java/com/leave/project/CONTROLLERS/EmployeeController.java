@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.leave.project.MODELS.Employee;
+import com.leave.project.MODELS.Role;
 import com.leave.project.REPO.EmployeeRepository;
 
 
@@ -24,8 +26,9 @@ public class EmployeeController {
 
     @RequestMapping(path = "/{id}/list", method = RequestMethod.GET)
     public String showEmployeeList(Model model,@PathVariable(value = "id") String id) {
-    	
-//        model.addAttribute("employees",employeeRepo.find);
+    	Role role = new Role(1,"manager");
+    	Employee emp = new Employee (5,"smith@gmail.com","Smith","smith","smith",role);
+        model.addAttribute("employees",employeeRepo.findByReportsTo(emp));
         return "approval_list";
     }
 	

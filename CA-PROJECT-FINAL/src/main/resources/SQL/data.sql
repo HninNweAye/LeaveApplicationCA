@@ -6,6 +6,10 @@ INSERT INTO `ca_project`.`employee`(`emp_id`,`email`,`full_name`,`password`,`use
 VALUES(3,'jennifer@gmail.com','Jennifer','jennifer','jennifer',1,2);
 INSERT INTO `ca_project`.`employee`(`emp_id`,`email`,`full_name`,`password`,`user_name`,`reports_to`,`role_id`)
 VALUES(4,'anna@gmail.com','anna','anna','anna',1,3);
+INSERT INTO `ca_project`.`employee`(`emp_id`,`email`,`full_name`,`password`,`user_name`,`reports_to`,`role_id`)
+VALUES(5,'smith@gmail.com','Smith','smith','smith',1,1);
+INSERT INTO `ca_project`.`employee`(`emp_id`,`email`,`full_name`,`password`,`user_name`,`reports_to`,`role_id`)
+VALUES(6,'kelvin@gmail.com','Kelvin','kelvin','kelvin',5,2);
 
 -- Role 
 INSERT INTO `ca_project`.`role`(`role_id`,`role_name`)VALUES(1,'manager');

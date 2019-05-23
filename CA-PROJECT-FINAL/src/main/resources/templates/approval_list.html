@@ -8,23 +8,27 @@
   <table id="employees" class="table table-striped">
         <thead>
         <tr>
-            <th >ID</th>
-            <th style="width: 150px;">Name</th>
-            <th style="width: 200px;">Username</th>
-            <th style="width: 150px;">Email</th>
-            <th style="width: 120px">Role</th>
+            <th style="width: 10px;">ID</th>
+            <th style="width: 100px;">Name</th>
+            <th style="width: 100px;">Username</th>
+            <th style="width: 100px;">LeaveType</th>
+            <th style="width: 100px;">Role</th>
+            <th style="width: 100px;">Status</th>
         </tr>
         </thead>
         <tbody>
-          <tr th:each="emp : ${employees}">
-          	  <td th:text="${emp.id}"/>
-              <td style="width: 150px;" th:text="${emp.fullName}"/>
-              <td style="width: 150px;" th:text="${emp.userName}"/>
-              <td style="width: 200px;" th:text="${emp.email}"/>
-              <td style="width: 120px;" th:text="${emp.role.roleName}"/>
-             
+          <tr th:each="leave : ${leave_list}">
+          	  <td style="width: 50px;" th:text="${leave.leaveHistoryId}"/>
+              <td style="width: 150px;" th:text="${leave.employee.fullName}"/>
+              <td style="width: 150px;" th:text="${leave.employee.userName}"/>
+              <td style="width: 200px;" th:text="${leave.leaveType.type}"/>
+              <td style="width: 120px;" th:text="${leave.employee.role.roleName}"/>
+              <td style="width: 120px;" th:text="${leave.leaveStatus}"/>
+ 			  <td ><a class="btn btn-default" th:href="@{/leave}">Detail</a></td>
+ 			  
           </tr>
         </tbody>
     </table>
+    
 </body>
 </html>

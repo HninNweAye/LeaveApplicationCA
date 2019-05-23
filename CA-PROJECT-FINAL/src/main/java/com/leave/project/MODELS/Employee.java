@@ -105,7 +105,16 @@ public class Employee {
 		this.role = role;
 		this.reportsTo = reportsTo;
 	}
-
+	public Employee(int empId, String fullName, String email, String userName, String password, Role role
+			) {
+		super();
+		this.empId = empId;
+		this.fullName = fullName;
+		this.email = email;
+		this.userName = userName;
+		this.password = password;
+		this.role = role;
+	}
 	@Override
 	public String toString() {
 		return "Employee [empId=" + empId + ", fullName=" + fullName + ", email=" + email + ", userName=" + userName
