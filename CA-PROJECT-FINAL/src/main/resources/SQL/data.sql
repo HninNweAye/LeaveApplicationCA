@@ -1,3 +1,10 @@
+
+
+-- Role 
+INSERT INTO `ca_project`.`role`(`role_id`,`role_name`)VALUES(1,'manager');
+INSERT INTO `ca_project`.`role`(`role_id`,`role_name`)VALUES(2,'staff');
+INSERT INTO `ca_project`.`role`(`role_id`,`role_name`)VALUES(3,'adminn');
+
 INSERT INTO `ca_project`.`employee`(`emp_id`,`email`,`full_name`,`password`,`user_name`,`reports_to`,`role_id`)
 VALUES(1,'aa@gmail.com','AAA','aaa','aaa',1,1);
 INSERT INTO `ca_project`.`employee`(`emp_id`,`email`,`full_name`,`password`,`user_name`,`reports_to`,`role_id`)
@@ -11,10 +18,6 @@ VALUES(5,'smith@gmail.com','Smith','smith','smith',1,1);
 INSERT INTO `ca_project`.`employee`(`emp_id`,`email`,`full_name`,`password`,`user_name`,`reports_to`,`role_id`)
 VALUES(6,'kelvin@gmail.com','Kelvin','kelvin','kelvin',5,2);
 
--- Role 
-INSERT INTO `ca_project`.`role`(`role_id`,`role_name`)VALUES(1,'manager');
-INSERT INTO `ca_project`.`role`(`role_id`,`role_name`)VALUES(2,'staff');
-INSERT INTO `ca_project`.`role`(`role_id`,`role_name`)VALUES(3,'adminn');
 
 -- Leave Type 
 INSERT INTO `ca_project`.`leave_type`(`leave_type_id`,`type`)VALUES(1,"AnnualLeave");
@@ -56,13 +59,13 @@ VALUES(8,60,4,2);
 
 -- leave_history_details
  INSERT INTO `ca_project`.`leave_history_details`(`leave_history_id`,`applying_reason`,`end_date`,`rejection_reason`,`start_date`,
- `status`,`work_desemination`,`emp_id`,`leave_type_id`)
+ `leave_status`,`work_desemination`,`emp_id`,`leave_type_id`)
 VALUES
-(1,'ill','2019-05-23','','2019-05-20',0,'',2,1);
+(1,'ill','2019-05-23','','2019-05-20','APPLIED','',2,1);
 INSERT INTO `ca_project`.`leave_history_details`(`leave_history_id`,`applying_reason`,`end_date`,`rejection_reason`,`start_date`,
- `status`,`work_desemination`,`emp_id`,`leave_type_id`)
+ `leave_status`,`work_desemination`,`emp_id`,`leave_type_id`)
 VALUES
-(2,'medical checkup','2019-05-24','','2019-05-22',0,'',3,2);
+(2,'medical checkup','2019-05-24','','2019-05-22','APPLIED','',3,2);
 
 
 SELECT * FROM ca_project.employee;

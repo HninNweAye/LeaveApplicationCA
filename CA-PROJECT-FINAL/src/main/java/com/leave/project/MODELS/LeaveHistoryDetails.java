@@ -1,6 +1,8 @@
 package com.leave.project.MODELS;
 
 import java.sql.Date;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -38,6 +40,8 @@ public class LeaveHistoryDetails {
 	@Enumerated(EnumType.STRING)
 	private Status leaveStatus;
 	private String workDesemination;
+	
+	
 	public int getLeaveHistoryId() {
 		return leaveHistoryId;
 	}
@@ -109,6 +113,33 @@ public class LeaveHistoryDetails {
 	public LeaveHistoryDetails() {
 		super();
 		// TODO Auto-generated constructor stub
+	}
+	@Override
+	public String toString() {
+		return "LeaveHistoryDetails [leaveHistoryId=" + leaveHistoryId + ", employee=" + employee + ", leaveType="
+				+ leaveType + ", startDate=" + startDate + ", endDate=" + endDate + ", applyingReason=" + applyingReason
+				+ ", rejectionReason=" + rejectionReason + ", leaveStatus=" + leaveStatus + ", workDesemination="
+				+ workDesemination + "]";
+	}
+	public boolean check(String startDate2, String endDate2) {
+		// TODO Auto-generated method stub
+    	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+    	boolean isAfter = LocalDate.parse(sdf.format(this.startDate)).isAfter(LocalDate.parse(startDate2).minusDays(1));
+    	boolean isBefore = LocalDate.parse(sdf.format(this.endDate)).isBefore(LocalDate.parse(endDate2).plusDays(1));
+    	System.out.println("StartDate1 : "+sdf.format(this.startDate));
+    	System.out.println("StartDate2 : "+startDate2);
+    	System.out.println("endDate1 : "+sdf.format(this.endDate));
+    	System.out.println("endDate2 : "+startDate2);
+
+    	System.out.println("isAfter "+isAfter);
+    	System.out.println("isBefore "+isBefore);
+    	System.out.println("************");
+
+    	if( isAfter && isBefore)
+    			{
+    				return true;
+    			}    	
+		return false;
 	}
 	
 	
