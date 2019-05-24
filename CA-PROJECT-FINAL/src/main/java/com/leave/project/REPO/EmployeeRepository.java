@@ -11,7 +11,7 @@ import com.leave.project.MODELS.Employee;
 
 
 @Repository
-public interface EmployeeRepository extends JpaRepository<Employee, Long> {
+public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
 	List<Employee> findByReportsTo(Employee emp);
 
 }

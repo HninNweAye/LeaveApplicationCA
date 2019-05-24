@@ -12,7 +12,7 @@ import com.leave.project.MODELS.LeaveHistoryDetails;
 import com.leave.project.UTILITIES.Status;
 
 
-public interface LeaveDetailsRepository extends JpaRepository<LeaveHistoryDetails, Long> {
+public interface LeaveDetailsRepository extends JpaRepository<LeaveHistoryDetails, Integer> {
 
 	List<LeaveHistoryDetails> findByEmployeeAndLeaveStatus(Employee emp,Status leaveStatus);
 	List<LeaveHistoryDetails> findByEmployee(Employee emp);

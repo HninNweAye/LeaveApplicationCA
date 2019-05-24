@@ -9,11 +9,15 @@ import java.util.List;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -21,17 +25,23 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.leave.project.MODELS.Employee;
 import com.leave.project.MODELS.LeaveHistoryDetails;
+import com.leave.project.MODELS.LeaveType;
 import com.leave.project.MODELS.Role;
 import com.leave.project.REPO.EmployeeRepository;
 import com.leave.project.REPO.LeaveDetailsRepository;
 import com.leave.project.REPO.LeaveTypeRepository;
 import com.leave.project.UTILITIES.Status;
+import com.opencsv.CSVWriter;
+import com.opencsv.bean.StatefulBeanToCsv;
+import com.opencsv.bean.StatefulBeanToCsvBuilder;
 
 @Controller
 public class LeaveDetailsController {
 
 	private LeaveDetailsRepository leaveRepo;
     private List<LeaveHistoryDetails> leaveList;
+    private List<LeaveHistoryDetails> toExportList = new ArrayList<LeaveHistoryDetails>();
+
     @Autowired
     public void setEmployeeRepository(LeaveDetailsRepository leaveRepo) {
         this.leaveRepo = leaveRepo;
@@ -51,7 +61,7 @@ public class LeaveDetailsController {
         this.leaveTypeRepo = leaveTypeRepo;
     }
     
-    @RequestMapping(path = "/leave_approval/list", method = RequestMethod.GET)
+    @RequestMapping(path = "/leave/approval_list", method = RequestMethod.GET)
     public String showEmployeeList(Model model) {
     	Role role = new Role(1,"manager");
 //    	Employee emp = new Employee (5,"smith@gmail.com","Smith","smith","smith",role);
@@ -92,50 +102,108 @@ public class LeaveDetailsController {
         return "leave_history";
     }
     
+    
     private List<Employee> getEmployeeList(){
     	Role role = new Role(1,"manager");
-//    	Employee emp = new Employee (5,"smith@gmail.com","Smith","smith","smith",role);
+    	//    	Employee emp = new Employee (5,"smith@gmail.com","Smith","smith","smith",role);
     	Employee emp = new Employee (1,"aaa@gmail.com","AAA","aaa","aaa",role);
     	List<Employee> empList = employeeRepo.findByReportsTo(emp);
 		return empList;
     }
-    //@Param("end_date")
+    
+    
     @RequestMapping(path = "/leave/filter", method = RequestMethod.GET)
     public String filterLeaveHistory(@RequestParam String leave_type,@RequestParam String status,@RequestParam String start_date,@RequestParam String end_date,Model model) {
-//    	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-//    	Date startDate = sdf.parse(start_date);
-//    	Date endDate = sdf.parse(end_date);
-
-    	System.out.println("**************************");
-    	System.out.println("StartDate :"+start_date);
-
-    	System.out.println(leaveList.size());
-
     	boolean dateFilter = false;
+    	toExportList.clear();
     	if(start_date != "" && end_date != "") {
     	dateFilter = true;
-    	 leaveList = leaveList.stream().filter(leave -> leave.check(start_date,end_date)).collect(Collectors.toList());
+    	toExportList = leaveList.stream().filter(leave -> leave.check(start_date,end_date)).collect(Collectors.toList());
     	}
-    	System.out.println(leaveList.size());
-
     	
     	if(leave_type.equals("ALL") && status.equals("ALL")) {
     		if(!dateFilter) {
     			return "redirect:/leave/leave_history";
     		}
     	}else if(!leave_type.equals("ALL") && !status.equals("ALL")) {
-    		leaveList = leaveList.stream().filter(leave -> (leave.getLeaveType().getType().equals(leave_type) && leave.getLeaveStatus().getStatus().equals(status))).collect(Collectors.toList());
+    		toExportList = leaveList.stream().filter(leave -> (leave.getLeaveType().getType().equals(leave_type) && leave.getLeaveStatus().getStatus().equals(status))).collect(Collectors.toList());
     	}else if(status.equals("ALL")) {
-    		leaveList = leaveList.stream().filter(leave -> leave.getLeaveType().getType().equals(leave_type)).collect(Collectors.toList());
+    		toExportList = leaveList.stream().filter(leave -> leave.getLeaveType().getType().equals(leave_type)).collect(Collectors.toList());
     	}else if(leave_type.equals("ALL") ) {
-    		leaveList = leaveList.stream().filter(leave -> leave.getLeaveStatus().getStatus().equals(status)).collect(Collectors.toList());
+    		toExportList = leaveList.stream().filter(leave -> leave.getLeaveStatus().getStatus().equals(status)).collect(Collectors.toList());
     	}
         model.addAttribute("status",status); 
         model.addAttribute("leave_type",leave_type);
-    	model.addAttribute("leave_list",leaveList);
+    	model.addAttribute("leave_list",toExportList);
         model.addAttribute("leave_type_lists",leaveTypeRepo.findAll());
 
     	return "leave_history";
     }
-	
+    
+    
+  //Export  to CSV file
+    @GetMapping("/leave/export")
+    public void exportCSV(HttpServletResponse response) throws Exception {
+        //set file name and content type
+        String filename = "LeaveList.csv";
+
+        response.setContentType("text/csv");
+        response.setHeader(HttpHeaders.CONTENT_DISPOSITION,
+                "attachment; filename=\"" + filename + "\"");
+
+        //create a csv writer
+        StatefulBeanToCsv<LeaveHistoryDetails> writer = new StatefulBeanToCsvBuilder<LeaveHistoryDetails>(response.getWriter())
+                .withQuotechar(CSVWriter.NO_QUOTE_CHARACTER) 
+                .withSeparator(CSVWriter.DEFAULT_SEPARATOR)
+                .withOrderedResults(false)
+                .build();
+
+        // leaveRepo.findAll(new Sort(Sort.Direction.DESC, "id"));
+               
+        writer.write(toExportList);
+        }
+    
+    @RequestMapping(path = "leave/edit_leave/{leave_history_id}", method = RequestMethod.GET)
+	public String updateleave(Model model,@PathVariable(value = "leave_history_id") String leave_history_id) {
+		LeaveHistoryDetails lhd = leaveRepo.findById(Integer.valueOf(leave_history_id)).orElse(null);
+		model.addAttribute("updateleave", lhd); 
+		return "edit_leave";
+	}
+    
+    @RequestMapping(path = "leave/leave_detail/{leave_history_id}", method = RequestMethod.GET)
+   	public String leaveDetail(Model model,@PathVariable(value = "leave_history_id") String leave_history_id) {
+   		LeaveHistoryDetails lhd = leaveRepo.findById(Integer.valueOf(leave_history_id)).orElse(null);
+   		model.addAttribute("leave_detail", lhd); 
+   		return "leave_detail";
+   	}
+    
+	@RequestMapping(path = "leave/edit_leave/{leave_id}", method=RequestMethod.POST)
+	public String saveleavestatus(String action,@PathVariable(value = "leave_id") String leave_history_id,@RequestParam("reasons") String reasons ) {
+		LeaveHistoryDetails ldh = leaveRepo.findById(Integer.valueOf(leave_history_id)).orElse(null);
+		Employee emp = ldh.getEmployee();
+		String leave_type =ldh.getLeaveType().getType();
+		
+		
+		if(action.equals("2"))
+		{
+			ldh.setLeaveStatus(Status.REJECTED);
+			ldh.setRejectionReason(reasons);
+		}
+		else if (action.equals("1"))
+		{
+			int count = ldh.getLeaveCount();
+			if(leave_type.equals("AnnualLeave")) {
+				emp.setAnnualLeaveCount(emp.getAnnualLeaveCount()-count);
+			}else if(leave_type.equals("MedicalLeave")) {
+				emp.setMedicalLeaveCount(emp.getMedicalLeaveCount()-count);
+			}else {
+				emp.setCompensationLeaveCount(emp.getCompensationLeaveCount()-count);
+			}
+			ldh.setLeaveStatus(Status.APPROVED);
+			employeeRepo.save(emp);
+		}
+		//else 
+		leaveRepo.save(ldh);
+		return "redirect:/leave/approval_list";
+	}
 }

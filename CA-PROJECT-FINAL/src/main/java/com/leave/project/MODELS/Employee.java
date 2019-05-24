@@ -21,9 +21,6 @@ public class Employee {
 	private String userName;
 	@NotNull
 	private String password;
-
-
-	
 	
 	@ManyToOne
 	@JoinColumn(name="Role_Id")
@@ -32,6 +29,10 @@ public class Employee {
 	@ManyToOne
 	@JoinColumn(name="Reports_To")
 	private Employee reportsTo;
+
+	private int annualLeaveCount;
+	private int compensationLeaveCount;
+	private int medicalLeaveCount;
 
 	public int getEmpId() {
 		return empId;
@@ -89,9 +90,49 @@ public class Employee {
 		this.reportsTo = reportsTo;
 	}
 
+	public int getAnnualLeaveCount() {
+		return annualLeaveCount;
+	}
+
+	public void setAnnualLeaveCount(int annualLeaveCount) {
+		this.annualLeaveCount = annualLeaveCount;
+	}
+
+	public int getCompensationLeaveCount() {
+		return compensationLeaveCount;
+	}
+
+	public void setCompensationLeaveCount(int compensationLeaveCount) {
+		this.compensationLeaveCount = compensationLeaveCount;
+	}
+
+	public int getMedicalLeaveCount() {
+		return medicalLeaveCount;
+	}
+
+	public void setMedicalLeaveCount(int medicalLeaveCount) {
+		this.medicalLeaveCount = medicalLeaveCount;
+	}
+
 	public Employee() {
 		super();
 		// TODO Auto-generated constructor stub
+	}
+
+	public Employee(int empId, @NotNull String fullName, @NotNull String email, @NotNull String userName,
+			@NotNull String password, Role role, Employee reportsTo, int annualLeaveCount, int compensationLeaveCount,
+			int medicalLeaveCount) {
+		super();
+		this.empId = empId;
+		this.fullName = fullName;
+		this.email = email;
+		this.userName = userName;
+		this.password = password;
+		this.role = role;
+		this.reportsTo = reportsTo;
+		this.annualLeaveCount = annualLeaveCount;
+		this.compensationLeaveCount = compensationLeaveCount;
+		this.medicalLeaveCount = medicalLeaveCount;
 	}
 
 	public Employee(int empId, String fullName, String email, String userName, String password, Role role,
@@ -115,11 +156,12 @@ public class Employee {
 		this.password = password;
 		this.role = role;
 	}
+
 	@Override
 	public String toString() {
-		return "Employee [empId=" + empId + ", fullName=" + fullName + ", email=" + email + ", userName=" + userName
-				+ ", password=" + password + ", role=" + role + ", reportsTo=" + reportsTo + "]";
+		return fullName ;
 	}
+	
 	
 	
 	

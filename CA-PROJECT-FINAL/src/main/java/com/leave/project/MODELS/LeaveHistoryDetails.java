@@ -3,6 +3,7 @@ package com.leave.project.MODELS;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.util.concurrent.TimeUnit;
 
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -17,6 +18,10 @@ import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 
 import com.leave.project.UTILITIES.Status;
+import com.leave.project.UTILITIES.Utils;
+import com.opencsv.bean.CsvBindByName;
+import com.opencsv.bean.CsvCustomBindByName;
+import com.opencsv.bean.CsvDate;
 
 @Entity
 public class LeaveHistoryDetails {
@@ -30,8 +35,10 @@ public class LeaveHistoryDetails {
 	@JoinColumn(name="Leave_Type_Id")
 	private LeaveType leaveType;
 	@NotNull
+	@CsvDate("dd-MM-yyyy")
 	private Date startDate;
 	@NotNull
+	@CsvDate("dd-MM-yyyy")
 	private Date endDate;
 	@NotNull
 	private String applyingReason;
@@ -114,10 +121,11 @@ public class LeaveHistoryDetails {
 		super();
 		// TODO Auto-generated constructor stub
 	}
+	
 	@Override
 	public String toString() {
-		return "LeaveHistoryDetails [leaveHistoryId=" + leaveHistoryId + ", employee=" + employee + ", leaveType="
-				+ leaveType + ", startDate=" + startDate + ", endDate=" + endDate + ", applyingReason=" + applyingReason
+		return "LeaveHistoryDetails [leaveHistoryId=" + leaveHistoryId + ", manager=" + employee.getFullName() + ", leaveType="
+				+ leaveType.getType() + ", startDate=" + Utils.format(startDate) + ",endDate=" + Utils.format(endDate) + ", applyingReason=" + applyingReason
 				+ ", rejectionReason=" + rejectionReason + ", leaveStatus=" + leaveStatus + ", workDesemination="
 				+ workDesemination + "]";
 	}
@@ -126,20 +134,16 @@ public class LeaveHistoryDetails {
     	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
     	boolean isAfter = LocalDate.parse(sdf.format(this.startDate)).isAfter(LocalDate.parse(startDate2).minusDays(1));
     	boolean isBefore = LocalDate.parse(sdf.format(this.endDate)).isBefore(LocalDate.parse(endDate2).plusDays(1));
-    	System.out.println("StartDate1 : "+sdf.format(this.startDate));
-    	System.out.println("StartDate2 : "+startDate2);
-    	System.out.println("endDate1 : "+sdf.format(this.endDate));
-    	System.out.println("endDate2 : "+startDate2);
-
-    	System.out.println("isAfter "+isAfter);
-    	System.out.println("isBefore "+isBefore);
-    	System.out.println("************");
-
+    	
     	if( isAfter && isBefore)
     			{
     				return true;
     			}    	
 		return false;
+	}
+	public int getLeaveCount() {
+		long diff = this.endDate.getTime() - this.startDate.getTime();
+		return (int) TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
 	}
 	
 	

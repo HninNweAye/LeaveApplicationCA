@@ -12,8 +12,9 @@
         <tr>
             <th style="width: 10px;">ID</th>
             <th style="width: 100px;">Name</th>
-            <th style="width: 100px;">Username</th>
             <th style="width: 100px;">LeaveType</th>
+            <th style="width: 100px;">StartDate</th>
+            <th style="width: 100px;">EndDate</th>
             <th style="width: 100px;">Role</th>
             <th style="width: 100px;">Status</th>
             <th style="width: 100px;">Details</th>
@@ -23,11 +24,12 @@
           <tr th:each="leave : ${leave_list}">
           	  <td style="width: 50px;" th:text="${leave.leaveHistoryId}"/>
               <td style="width: 150px;" th:text="${leave.employee.fullName}"/>
-              <td style="width: 150px;" th:text="${leave.employee.userName}"/>
               <td style="width: 200px;" th:text="${leave.leaveType.type}"/>
+              <td style="width: 150px;" th:text="${leave.startDate}"/>
+              <td style="width: 150px;" th:text="${leave.endDate}"/>
               <td style="width: 120px;" th:text="${leave.employee.role.roleName}"/>
               <td style="width: 120px;" th:text="${leave.leaveStatus}"/>
- 			  <td ><a class="btn btn-default" th:href="@{/leave}">Detail</a></td>
+ 			  <td ><a th:href="${'edit_leave/'+leave.leaveHistoryId}">Detail</a></td> 
  			  
           </tr>
         </tbody>
