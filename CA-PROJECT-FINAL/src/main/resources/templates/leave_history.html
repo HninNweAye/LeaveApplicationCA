@@ -6,9 +6,9 @@
 <title>EmployeeList</title>
 </head>
 <body>
- <form th:action="@{/leave/filter}" method="get" class="form-horizontal" >
 <div class="container">
-
+<h2>Leave History</h2>
+ <form th:action="@{/leave/filter}" method="get" class="form-horizontal" >
   <div th:if="${not #lists.isEmpty(leave_type_lists)}">
 	<div class="row">
 		<div class="col-2">
